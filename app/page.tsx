@@ -276,8 +276,8 @@ export default function Page() {
                 Fill in Details
               </h3>
               <p className="text-gray-600">
-                Enter your business info, customer details, and line items. Our
-                smart form makes it easy.
+                Enter your business info, customer details, and items. Our smart
+                form makes it easy.
               </p>
             </div>
 
