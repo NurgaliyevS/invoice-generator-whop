@@ -394,8 +394,8 @@ export default function CreateInvoice() {
                     key={item.id}
                     className="border border-gray-200 rounded-lg p-4"
                   >
-                    <div className="grid grid-cols-12 gap-4">
-                      <div className="col-span-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Description *
                         </label>
@@ -413,7 +413,7 @@ export default function CreateInvoice() {
                           placeholder="Item description"
                         />
                       </div>
-                      <div className="col-span-2">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Qty
                         </label>
@@ -431,38 +431,30 @@ export default function CreateInvoice() {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
-                      <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Unit Price
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          value={item.unitPrice}
-                          onChange={(e) =>
-                            updateLineItem(
-                              item.id,
-                              "unitPrice",
-                              parseFloat(e.target.value) || 0
-                            )
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      </div>
-                      <div className="col-span-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Total
-                        </label>
-                        <div className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm">
-                          ${item.total.toFixed(2)}
+                      <div className="flex gap-2 items-end">
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Unit Price
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            step="10"
+                            value={item.unitPrice}
+                            onChange={(e) =>
+                              updateLineItem(
+                                item.id,
+                                "unitPrice",
+                                parseFloat(e.target.value) || 0
+                              )
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
                         </div>
-                      </div>
-                      <div className="col-span-1 flex items-end">
                         {invoiceData.items.length > 1 && (
                           <button
                             onClick={() => removeLineItem(item.id)}
-                            className="text-red-600 hover:text-red-800 transition-colors"
+                            className="text-red-600 hover:text-red-800 transition-colors mb-1"
                           >
                             <svg
                               className="w-5 h-5"
