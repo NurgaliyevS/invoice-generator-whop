@@ -1,0 +1,218 @@
+# Whop Invoice Generator - Product Requirements Document
+
+## Project Overview
+A simple, full-stack invoice generator built with Next.js (App Router) for Whop platform sellers. The application should be buildable in a few hours with minimal complexity and no database requirements.
+
+## Core Objectives
+- Generate professional invoices quickly
+- No database dependency (use JSON files if storage needed)
+- Simple, clean UI/UX
+- PDF export functionality
+- Deployable as a standalone application
+
+## Technical Requirements
+
+### Stack
+- **Framework**: Next.js 15+ with App Router
+- **Styling**: Tailwind CSS
+- **PDF Generation**: @chuongtrh/html-to-pdf
+- **Data Storage**: JSON files (if needed) or local storage
+- **Deployment**: Vercel (recommended for Next.js)
+
+### Architecture
+- Frontend: React components with Next.js App Router
+- Backend: Next.js API routes for PDF generation
+- No external database
+- File-based storage for templates/settings (optional)
+
+## User Stories
+
+### Primary User Story
+**As a Whop seller**, I want to create professional invoices quickly so I can send them to my customers without manual formatting.
+
+### Core User Journey
+1. User opens the invoice generator
+2. User fills in invoice details (customer, items, amounts)
+3. User previews the invoice
+4. User generates and downloads PDF
+5. User can optionally save invoice data for future reference
+
+## Feature Requirements
+
+### MVP Features (Must Have)
+
+#### 1. Invoice Form
+- **Customer Information**
+  - Customer name (required)
+  - Customer email (required)
+  - Customer address (optional)
+  
+- **Business Information**
+  - Business name (pre-filled, editable)
+  - Business address (pre-filled, editable)
+  - Business email (pre-filled, editable)
+  - Logo upload (optional)
+
+- **Invoice Details**
+  - Invoice number (auto-generated: INV-YYYYMMDD-001)
+  - Invoice date (default: today)
+  - Due date (default: +30 days)
+  
+- **Line Items**
+  - Description (required)
+  - Quantity (default: 1)
+  - Unit price (required)
+  - Automatic total calculation
+  - Add/remove line items dynamically
+
+- **Totals**
+  - Subtotal (auto-calculated)
+  - Tax rate (optional, default: 0%)
+  - Tax amount (auto-calculated)
+  - Total amount (auto-calculated)
+
+#### 2. Invoice Preview
+- Real-time preview of invoice as user types
+- Professional invoice template
+- Responsive design for mobile/desktop
+
+#### 3. PDF Generation
+- Generate PDF button
+- Download PDF directly to user's device
+- Professional formatting in PDF
+
+#### 4. Basic Settings
+- Save business information for future use
+- Simple settings page for business details
+
+### Nice-to-Have Features (Future)
+- Multiple invoice templates
+- Invoice history (using JSON files)
+- Recurring invoice templates
+- Export to different formats
+
+## Technical Specifications
+
+### File Structure
+```
+/app
+  /api
+    /generate-pdf
+      route.ts
+  /components
+    InvoiceForm.tsx
+    InvoicePreview.tsx
+    Settings.tsx
+  /lib
+    utils.ts
+    invoice-helpers.ts
+  page.tsx
+  layout.tsx
+/public
+  default-logo.png
+/data (optional)
+  business-settings.json
+  invoice-templates.json
+```
+
+### API Endpoints
+- `POST /api/generate-pdf` - Generate and return PDF
+- `GET /api/settings` - Get business settings (if using JSON files)
+- `POST /api/settings` - Save business settings (if using JSON files)
+
+### Data Models
+
+#### Invoice Data Structure
+```typescript
+interface Invoice {
+  invoiceNumber: string;
+  date: string;
+  dueDate: string;
+  customer: {
+    name: string;
+    email: string;
+    address?: string;
+  };
+  business: {
+    name: string;
+    email: string;
+    address: string;
+    logo?: string;
+  };
+  items: {
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    total: number;
+  }[];
+  subtotal: number;
+  taxRate: number;
+  taxAmount: number;
+  total: number;
+}
+```
+
+## UI/UX Requirements
+
+### Design Principles
+- Clean, minimal interface
+- Form-based workflow
+- Real-time preview
+- Mobile-responsive
+- Professional appearance
+
+### Layout
+- **Header**: App title and navigation
+- **Main Content**: Two-column layout (form + preview) on desktop, stacked on mobile
+- **Footer**: Simple footer with links
+
+### Color Scheme
+- Primary: Professional blue (#3B82F6)
+- Secondary: Gray tones
+- Success: Green for completed actions
+- Error: Red for validation errors
+
+## Performance Requirements
+- Page load time: < 3 seconds
+- PDF generation: < 5 seconds
+- Responsive on mobile devices
+- Works offline (no external API dependencies)
+
+## Security Considerations
+- No sensitive data storage (since no database)
+- Client-side validation
+- Sanitize user inputs
+- HTTPS deployment
+
+## Deployment Requirements
+- Deploy to Vercel (recommended)
+- Environment variables for any configuration
+- Build process should complete in < 5 minutes
+
+## Success Metrics
+- User can generate first invoice in < 2 minutes
+- PDF generation success rate > 99%
+- Application loads successfully on mobile and desktop
+- Zero external dependencies for core functionality
+
+## Development Timeline
+**Total: 3-4 hours**
+
+- **Hour 1**: Project setup, basic layout, form components
+- **Hour 2**: Invoice preview, real-time updates, styling
+- **Hour 3**: PDF generation, API routes
+- **Hour 4**: Polish, testing, deployment
+
+## Constraints
+- No database usage
+- No complex authentication
+- No payment processing
+- No email sending (MVP)
+- Minimal external dependencies
+
+## Future Enhancements
+- Whop API integration for automatic customer/product data
+- Invoice history with JSON file storage
+- Multiple templates
+- Email functionality
+- Batch invoice generation
