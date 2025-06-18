@@ -36,14 +36,14 @@ interface InvoiceData {
 export default function CreateInvoice() {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({
     business: {
-      name: "Your Business Name",
-      email: "business@example.com",
-      address: "123 Business St, City, State 12345",
+      name: "Holmes Investigations",
+      email: "sherlock@221bbakerstreet.co.uk",
+      address: "221B Baker Street, London, UK",
     },
     customer: {
-      name: "",
-      email: "",
-      address: "",
+      name: "Dr. John H. Watson",
+      email: "watson@medcorp.uk",
+      address: "14 Kensington Gardens, London, UK",
     },
     invoice: {
       number: generateInvoiceNumber(),
