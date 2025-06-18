@@ -105,7 +105,7 @@
       .items-table th {
         background-color: #f3f4f6;
         padding: 16px;
-        text-align: left;
+        text-align: right;
         font-weight: 600;
         color: #1f2937;
         border-bottom: 2px solid #e5e7eb;
@@ -121,10 +121,11 @@
 
       .item-description {
         font-weight: 500;
+        text-align: left !important;
       }
 
       .item-quantity {
-        text-align: center;
+        text-align: right;
       }
 
       .item-price,
@@ -165,6 +166,14 @@
         opacity: 0.3;
         z-index: 1;
         pointer-events: none;
+      }
+
+      .text-right {
+        text-align: right;
+      }
+
+      .text-left {
+        text-align: left !important;
       }
 
       @media print {
@@ -211,10 +220,10 @@
       <table class="items-table">
         <thead>
           <tr>
-            <th>Description</th>
-            <th class="item-quantity">Qty</th>
-            <th class="item-price">Unit Price</th>
-            <th class="item-total">Total</th>
+            <th class="text-left">Description</th>
+            <th class="item-quantity text-right">Qty</th>
+            <th class="item-price text-right">Unit Price</th>
+            <th class="item-total text-right">Total</th>
           </tr>
         </thead>
         <tbody>
