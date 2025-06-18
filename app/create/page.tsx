@@ -126,8 +126,8 @@ export default function CreateInvoice() {
 
   const handleGeneratePDF = async () => {
     // Validate required fields
-    if (!invoiceData.customer.name || !invoiceData.customer.email) {
-      alert("Please fill in customer name and email");
+    if (!invoiceData.customer.name) {
+      alert("Please fill in customer name");
       return;
     }
 
@@ -223,7 +223,7 @@ export default function CreateInvoice() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Business Email *
+                    Business Email
                   </label>
                   <input
                     type="email"
@@ -240,7 +240,7 @@ export default function CreateInvoice() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Business Address *
+                    Business Address
                   </label>
                   <textarea
                     value={invoiceData.business.address}
@@ -283,7 +283,7 @@ export default function CreateInvoice() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Customer Email *
+                    Customer Email
                   </label>
                   <input
                     type="email"
@@ -434,7 +434,7 @@ export default function CreateInvoice() {
                       <div className="flex gap-2 items-end">
                         <div className="flex-1">
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Unit Price
+                            Unit Price *
                           </label>
                           <input
                             type="number"
@@ -548,7 +548,7 @@ export default function CreateInvoice() {
                     <h3 className="font-semibold text-gray-900 mb-2">
                       Bill To:
                     </h3>
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 text-sm">
                       {invoiceData.customer.name || "Customer Name"}
                     </p>
                     <p className="text-neutral-700 text-sm">
