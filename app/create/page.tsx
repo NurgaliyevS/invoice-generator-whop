@@ -65,6 +65,15 @@ export default function CreateInvoice() {
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error";
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   function generateInvoiceNumber(): string {
     const today = new Date();
@@ -127,14 +136,17 @@ export default function CreateInvoice() {
   const handleGeneratePDF = async () => {
     // Validate required fields
     if (!invoiceData.customer.name) {
-      alert("Please fill in customer name");
+      showNotification("Please fill in customer name", "error");
       return;
     }
 
     if (
       invoiceData.items.some((item) => !item.description || item.unitPrice <= 0)
     ) {
-      alert("Please fill in all item descriptions and prices");
+      showNotification(
+        "Please fill in all item descriptions and prices",
+        "error"
+      );
       return;
     }
 
@@ -143,12 +155,20 @@ export default function CreateInvoice() {
       const pdfBlob = await generateInvoicePDF(invoiceData);
       const filename = `invoice-${invoiceData.invoice.number}.pdf`;
       downloadPDF(pdfBlob, filename);
+      showNotification("Invoice generated successfully!", "success");
     } catch (error) {
       console.error("Error generating PDF:", error);
-      alert("Failed to generate PDF. Please try again.");
+      showNotification("Failed to generate PDF. Please try again.", "error");
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const showNotification = (message: string, type: "success" | "error") => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "success" });
+    }, 5000);
   };
 
   return (
@@ -560,20 +580,24 @@ export default function CreateInvoice() {
                   </div>
                   <div className="text-right">
                     <div className="mb-2">
-                      <span className="text-neutral-700">Invoice #: </span>
-                      <span className="font-medium">
+                      <span className="font-semibold text-gray-900">
+                        Invoice NO:{" "}
+                      </span>
+                      <span className="text-neutral-700 text-sm">
                         {invoiceData.invoice.number}
                       </span>
                     </div>
                     <div className="mb-2">
-                      <span className="text-neutral-700">Date: </span>
-                      <span className="font-medium">
+                      <span className="text-neutral-700 text-sm">Date: </span>
+                      <span className="text-neutral-700 text-sm">
                         {invoiceData.invoice.date}
                       </span>
                     </div>
                     <div>
-                      <span className="text-neutral-700">Due Date: </span>
-                      <span className="font-medium">
+                      <span className="text-neutral-700 text-sm">
+                        Due Date:{" "}
+                      </span>
+                      <span className="text-neutral-700 text-sm">
                         {invoiceData.invoice.dueDate}
                       </span>
                     </div>
@@ -621,6 +645,37 @@ export default function CreateInvoice() {
           </div>
         </div>
       </div>
+
+      {/* Notification */}
+      {notification.show && (
+        <div
+          className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm ${
+            notification.type === "error"
+              ? "bg-red-100 border border-red-400 text-red-700"
+              : "bg-green-100 border border-green-400 text-green-700"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <span className="font-medium">{notification.message}</span>
+            </div>
+            <button
+              onClick={() =>
+                setNotification({ show: false, message: "", type: "success" })
+              }
+              className="ml-4 text-gray-400 hover:text-gray-600"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

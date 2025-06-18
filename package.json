@@ -14,6 +14,7 @@
     "@ai-sdk/openai": "^1.3.22",
     "@chuongtrh/html-to-pdf": "^1.0.2",
     "@radix-ui/react-slot": "^1.2.3",
+    "@vaadin/notification": "^24.8.0",
     "@vercel/functions": "^2.0.3",
     "@whop/api": "^0.0.27",
     "@whop/react": "0.2.6",
