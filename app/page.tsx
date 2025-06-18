@@ -349,7 +349,9 @@ export default function Page() {
                   />
                 </svg>
               </div>
-              <span className="text-xl font-bold">Invoice Generator</span>
+              <span className="text-xl font-bold text-white">
+                Invoice Generator
+              </span>
             </div>
             <p className="text-gray-400">
               Built for Whop sellers. Create professional invoices quickly and
