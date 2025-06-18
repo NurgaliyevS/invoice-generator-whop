@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { generateInvoicePDF, downloadPDF } from "../../lib/pdf-generator";
 
 interface LineItem {
   id: string;
@@ -63,6 +64,8 @@ export default function CreateInvoice() {
     taxRate: 0,
   });
 
+  const [isGenerating, setIsGenerating] = useState(false);
+
   function generateInvoiceNumber(): string {
     const today = new Date();
     const year = today.getFullYear();
@@ -121,6 +124,33 @@ export default function CreateInvoice() {
   const taxAmount = (subtotal * invoiceData.taxRate) / 100;
   const total = subtotal + taxAmount;
 
+  const handleGeneratePDF = async () => {
+    // Validate required fields
+    if (!invoiceData.customer.name || !invoiceData.customer.email) {
+      alert("Please fill in customer name and email");
+      return;
+    }
+
+    if (
+      invoiceData.items.some((item) => !item.description || item.unitPrice <= 0)
+    ) {
+      alert("Please fill in all item descriptions and prices");
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const pdfBlob = await generateInvoicePDF(invoiceData);
+      const filename = `invoice-${invoiceData.invoice.number}.pdf`;
+      downloadPDF(pdfBlob, filename);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -130,7 +160,7 @@ export default function CreateInvoice() {
             <div className="flex items-center">
               <Link
                 href="/"
-                className="flex items-center text-gray-600 hover:text-blue-600 transition-colors"
+                className="flex items-center hover:text-blue-600 transition-colors"
               >
                 <svg
                   className="w-5 h-5 mr-2"
@@ -152,8 +182,12 @@ export default function CreateInvoice() {
               <h1 className="text-2xl font-bold text-gray-900">
                 Create Invoice
               </h1>
-              <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Generate PDF
+              <button
+                onClick={handleGeneratePDF}
+                disabled={isGenerating}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isGenerating ? "Generating..." : "Generate PDF"}
               </button>
             </div>
           </div>
@@ -480,11 +514,11 @@ export default function CreateInvoice() {
                 </div>
                 <div className="space-y-2 text-right">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Subtotal:</span>
+                    <span className="text-neutral-700">Subtotal:</span>
                     <span className="font-medium">${subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">
+                    <span className="text-neutral-700">
                       Tax ({invoiceData.taxRate}%):
                     </span>
                     <span className="font-medium">${taxAmount.toFixed(2)}</span>
@@ -509,8 +543,10 @@ export default function CreateInvoice() {
                   <h1 className="text-2xl font-bold text-gray-900">
                     {invoiceData.business.name}
                   </h1>
-                  <p className="text-gray-600">{invoiceData.business.email}</p>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-neutral-700">
+                    {invoiceData.business.email}
+                  </p>
+                  <p className="text-neutral-700 text-sm">
                     {invoiceData.business.address}
                   </p>
                 </div>
@@ -523,28 +559,28 @@ export default function CreateInvoice() {
                     <p className="text-gray-700">
                       {invoiceData.customer.name || "Customer Name"}
                     </p>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-neutral-700 text-sm">
                       {invoiceData.customer.email || "customer@example.com"}
                     </p>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-neutral-700 text-sm">
                       {invoiceData.customer.address || "Customer Address"}
                     </p>
                   </div>
                   <div className="text-right">
                     <div className="mb-2">
-                      <span className="text-gray-600">Invoice #: </span>
+                      <span className="text-neutral-700">Invoice #: </span>
                       <span className="font-medium">
                         {invoiceData.invoice.number}
                       </span>
                     </div>
                     <div className="mb-2">
-                      <span className="text-gray-600">Date: </span>
+                      <span className="text-neutral-700">Date: </span>
                       <span className="font-medium">
                         {invoiceData.invoice.date}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Due Date: </span>
+                      <span className="text-neutral-700">Due Date: </span>
                       <span className="font-medium">
                         {invoiceData.invoice.dueDate}
                       </span>
@@ -560,7 +596,7 @@ export default function CreateInvoice() {
                           <span className="font-medium">
                             {item.description || "Item description"}
                           </span>
-                          <span className="text-gray-600 text-sm ml-2">
+                          <span className="text-neutral-700 text-sm ml-2">
                             x{item.quantity}
                           </span>
                         </div>
@@ -573,11 +609,11 @@ export default function CreateInvoice() {
 
                   <div className="border-t border-gray-200 mt-4 pt-4 space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Subtotal:</span>
+                      <span className="text-neutral-700">Subtotal:</span>
                       <span>${subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">
+                      <span className="text-neutral-700">
                         Tax ({invoiceData.taxRate}%):
                       </span>
                       <span>${taxAmount.toFixed(2)}</span>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: white;
+      }
+
+      .invoice-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        border-bottom: 2px solid #3b82f6;
+        padding-bottom: 20px;
+      }
+
+      .business-name {
+        font-size: 28px;
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 8px;
+      }
+
+      .business-details {
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .invoice-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px;
+      }
+
+      .bill-to {
+        flex: 1;
+      }
+
+      .invoice-details {
+        flex: 1;
+        text-align: right;
+      }
+
+      .section-title {
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      .customer-name {
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 4px;
+      }
+
+      .customer-details {
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .invoice-number {
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 4px;
+      }
+
+      .invoice-date {
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+
+      .items-table th {
+        background-color: #f3f4f6;
+        padding: 12px;
+        text-align: left;
+        font-weight: bold;
+        color: #1f2937;
+        border-bottom: 2px solid #e5e7eb;
+      }
+
+      .items-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .item-description {
+        font-weight: 500;
+      }
+
+      .item-quantity {
+        text-align: center;
+      }
+
+      .item-price,
+      .item-total {
+        text-align: right;
+      }
+
+      .totals {
+        margin-left: auto;
+        width: 300px;
+      }
+
+      .total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+      }
+
+      .total-row.final {
+        border-top: 2px solid #e5e7eb;
+        font-weight: bold;
+        font-size: 18px;
+        margin-top: 8px;
+        padding-top: 12px;
+      }
+
+      .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        font-size: 60px;
+        font-weight: bold;
+        color: #10b981;
+        opacity: 0.3;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+          color-adjust: exact;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {{#if isWatermark}}
+    <div class="watermark">PAID</div>
+    {{/if}}
+
+    <div class="invoice-container">
+      <div class="header">
+        <div class="business-name">{{business.name}}</div>
+        <div class="business-details">
+          {{business.email}}<br />
+          {{business.address}}
+        </div>
+      </div>
+
+      <div class="invoice-info">
+        <div class="bill-to">
+          <div class="section-title">Bill To:</div>
+          <div class="customer-name">{{customer.name}}</div>
+          <div class="customer-details">
+            {{customer.email}}<br />
+            {{customer.address}}
+          </div>
+        </div>
+
+        <div class="invoice-details">
+          <div class="invoice-number">Invoice #{{invoice.number}}</div>
+          <div class="invoice-date">
+            Date: {{invoice.date}}<br />
+            Due Date: {{invoice.dueDate}}
+          </div>
+        </div>
+      </div>
+
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th class="item-quantity">Qty</th>
+            <th class="item-price">Unit Price</th>
+            <th class="item-total">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items}}
+          <tr>
+            <td class="item-description">{{description}}</td>
+            <td class="item-quantity">{{quantity}}</td>
+            <td class="item-price">${{unitPrice}}</td>
+            <td class="item-total">${{total}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+
+      <div class="totals">
+        <div class="total-row">
+          <span>Subtotal:</span>
+          <span>${{subtotal}}</span>
+        </div>
+        {{#if taxRate}}
+        <div class="total-row">
+          <span>Tax ({{taxRate}}%):</span>
+          <span>${{taxAmount}}</span>
+        </div>
+        {{/if}}
+        <div class="total-row final">
+          <span>Total:</span>
+          <span>${{total}}</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
